@@ -1,0 +1,5 @@
+# Directory labels
+ sched
+ nr
+# Source files and their labels
+/home/akhil/ORAN/srsRAN_4G-release_23_11/srsgnb/src/stack/mac/test/sched_nr_prb_test.cc
