@@ -15,11 +15,16 @@ Above command creates a Open5gs core, a gNB and a UE talking to the gNB.
 ### Disaggregated Split 8
 Following command can be used to run in Disaggregated mode
 ```
-docker compose up 5gc cu du srsue1
+docker compose up 5gc cu0 du0 srsue0
 ```
-**Note: that the UE gets released if the connection is idle and both gNB and srsue must be restarted when the UE is released.**
+**Note: the UE gets released if the connection is idle and both gNB and srsue must be restarted when the UE is released. To resolve this pings are done from the UE end this might keep ones system resources utilized a lot.**
 ### Dashboards(Optional)
 Optionally dashboards can be enabled by using the following commands
 ```
 docker compose up grafana metrics-server influxdb
+```
+### Multiple CU, DU, and UEs
+Following command can be used to run CU, DU and UE each there are one to one connections between each of these:
+```
+docker compose up 5gc cu0 du0 srsue0 cu1 du1 srsue1 cu2 du2 srsue2 cu3 du3 srsue3
 ```
