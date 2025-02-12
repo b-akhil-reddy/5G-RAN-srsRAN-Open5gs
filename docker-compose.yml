@@ -545,24 +545,18 @@ volumes:
 
 networks:
   ran:
-    stdin_open: true
-    tty: true
     internal: true
     ipam:
       driver: default
       config:
         - subnet: 10.53.1.0/24
   ue:
-    stdin_open: true
-    tty: true
     internal: true
     ipam:
       driver: default
       config:
         - subnet: 10.53.10.0/24
   metrics:
-    stdin_open: true
-    tty: true
     ipam:
       driver: default
       config:
