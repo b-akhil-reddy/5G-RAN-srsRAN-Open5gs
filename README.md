@@ -2,7 +2,7 @@
 This repository is an excerpt from the srsRAN_Project and srsRAN_4G projects, designed to simplify the deployment and simulation of a 5G RAN it uses the Open5gs 5G core. The goal of this repository is to make real 5G RAN simulation accessible for both researchers and developers, facilitating experimentation and optimization. This repository is fully automated with the help of docker-compose commands to run can be found at the end of this README file.
 
 # Available configurations
-At present this repository has the ability to run either in monolithic gNB mode or in disaggregated mode. And the docker images that are used support the split option 8. Separate networks are maintained for CU-DU communication, CU-Open5gS communication and grafana dashboard related communication. At present there is a single UE in the database that is given as a Command parameter for the Open5gs one can have a csv of users as per the srsRAN documentation for multi-user support.
+At present this repository has the ability to run either in monolithic gNB mode or in disaggregated mode. And the docker images that are used support the split option 8. Separate networks are maintained for CU-DU communication, CU-Open5gS communication and grafana dashboard related communication. To support multiple UEs a csv of users as per the srsRAN documentation for multi-user support is created and stored in open5gs([subscriber.csv](./open5gs/subscribers.csv)).
 
 # Running:
 
