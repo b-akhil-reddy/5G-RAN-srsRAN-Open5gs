@@ -25,8 +25,7 @@ services:
     container_name: open5gs_5gc
     image: akhil15935/open5gs-5gc:latest
     build:
-      context: open5gs
-      target: akhil15935/open5gs-5gc:latest
+      context: ./open5gs
       args:
         OS_VERSION: "22.04"
         OPEN5GS_VERSION: "v2.7.0"
