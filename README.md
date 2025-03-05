@@ -43,7 +43,7 @@ This repository can also be used with ORAN-SC-RIC to run this a minute change mu
       config:
           - subnet: 10.0.2.0/24
 ```
-Another way of doing it is to identify the name of the network that is created by oran-sc-ric(usually it would be `<prefix>_ric_network` where `<prefix>` is the name of the folder to which the `docker-compose.yml` file is in) one can use this name and change this [`docker compose`](./docker-compose.yml) file to use this network instead as following:
+Another way of doing is by identifying the name of the network that is created by oran-sc-ric(usually it would be `<prefix>_ric_network` where `<prefix>` is the name of the folder to which the `docker-compose.yml` file is in). One can use this as the network name and change this [`docker compose`](./docker-compose.yml) file to use the network created by oran-sc-ric deployment. Following is the change:
 ```
   ...
   networks:
@@ -52,4 +52,36 @@ Another way of doing it is to identify the name of the network that is created b
 -     name: ric_network
 +     name: <prefix>_ric_network
       external: true
+```
+
+# Known Issues and Fixes
+### CU, DU and UE
+The images used in the project work with a specific configuration of the system specifically `cu`, `du` and `ue`. One can tackle this by generating the docker image `gnb`. To generate the images you can follow the below steps:
+- Clone the [srsRAN_Project 24.10](https://github.com/srsran/srsRAN_Project/tree/release_24_10)
+    ```
+    git clone -b relese_24_10 https://github.com/srsran/srsRAN_Project
+    ```
+- Enable ZeroMQ drivers installation for the run time in the file [install_dependencies.sh](https://github.com/srsran/srsRAN_Project/blob/release_24_10/docker/scripts/install_dependencies.sh) for ubuntu the package name is `libzmq3-dev`. If necessary add any other debugging tools you would like to use.
+- In the docker directory run the following command
+    ```
+    docker compose build gnb
+    ```
+    this creates the gNB image. Check the name of the image using following command.
+    ```
+    docker image ls
+    ```
+- Use the docker image created for UE. Replace all `akhil15935/gnb:split_8` with the name of the image that is created in the [srsue/Dockerfile](./srsue/Dockerfile).
+
+    Note: one can face trouble with the above output image the reason for this is the build directory is built and all the artifacts are used. To solve this one can rebuild a stable [`srsRAN 4G`](https://github.com/srsran/srsRAN_4G)(`release_23_11` is used in this project) and use the output build directory from stable version of project.
+- Once the above is done build the image in [srsue](./srsue) directory
+    ```
+    cd srsue
+    docker build . -t <ue-image-name>
+    ```
+- Use the docker images created in this [docker-compose.yml](./docker-compose.yml) file. Replace all `akhil15935/gnb:split_8` with the name of the image that is created first. And replace all `akhil15935/srsue:split_8` with the name of UE image created above.
+
+### 5G Core Network
+The core network would work as is in most scenarios if you find any trouble you can also build the core network by running the following command.
+```
+docker compose build 5gc
 ```
