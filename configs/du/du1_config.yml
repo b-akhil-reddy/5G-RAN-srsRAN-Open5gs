@@ -35,13 +35,13 @@ cell_cfg:
     nof_cb_preambles_per_ssb: 64    # Sets the number of contention based preambles per SSB.
 
 
-# e2:
-#   enable_du_e2: true
-#   e2sm_kpm_enabled: true
-#   e2sm_rc_enabled: true
-#   addr: 10.0.2.10
-#   port: 36421
-#   bind_addr: 10.53.1.5
+e2:
+  enable_du_e2: true
+  e2sm_kpm_enabled: true
+  e2sm_rc_enabled: true
+  addr: 10.0.2.10
+  port: 36421
+  bind_addr: 10.53.1.16
 
 log:
   filename: /tmp/du.log
