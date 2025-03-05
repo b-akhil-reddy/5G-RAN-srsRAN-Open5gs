@@ -23,8 +23,33 @@ Optionally dashboards can be enabled by using the following commands
 ```
 docker compose up grafana metrics-server influxdb
 ```
+
 ### Multiple CU, DU, and UEs
 Following command can be used to run CU, DU and UE each there are one to one connections between each of these:
 ```
 docker compose up 5gc cu0 du0 srsue0 cu1 du1 srsue1 cu2 du2 srsue2 cu3 du3 srsue3
+```
+Its preferrable not to run the above command as all UEs in the tests performed only one UE gets connected while running all of them in parallel.
+
+### Support for ORAN-SC-RIC
+This repository can also be used with ORAN-SC-RIC to run this a minute change must be made to the `docker-compose.yml` file of oran-sc-ric([here](https://github.com/srsran/oran-sc-ric)). Following is the only change that has to be made:
+```
+  ...
+  networks:
+    ric_network:
++     name: ric_network
+      ipam:
+      driver: default
+      config:
+          - subnet: 10.0.2.0/24
+```
+Another way of doing it is to identify the name of the network that is created by oran-sc-ric(usually it would be `<prefix>_ric_network` where `<prefix>` is the name of the folder to which the `docker-compose.yml` file is in) one can use this name and change this [`docker compose`](./docker-compose.yml) file to use this network instead as following:
+```
+  ...
+  networks:
+  ...
+    ric_network:
+-     name: ric_network
++     name: <prefix>_ric_network
+      external: true
 ```
