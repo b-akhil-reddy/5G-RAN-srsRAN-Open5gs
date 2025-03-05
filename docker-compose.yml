@@ -26,7 +26,7 @@ services:
     image: akhil15935/open5gs-5gc:latest
     build:
       context: open5gs
-      target: akhil15935/open5gs-5gc
+      target: akhil15935/open5gs-5gc:latest
       args:
         OS_VERSION: "22.04"
         OPEN5GS_VERSION: "v2.7.0"
@@ -74,6 +74,8 @@ services:
     networks:
       ran:
         ipv4_address: ${GNB_IP:-10.53.1.4}
+      ric_network:
+        ipv4_address: 10.0.2.30
       ue:
         ipv4_address: 10.53.10.4
       metrics:
@@ -106,6 +108,8 @@ services:
       - ./configs/cu:/configs
       - ./logs/cu1_logs:/tmp
     networks:
+      ric_network:
+        ipv4_address: 10.0.2.31
       ran:
         ipv4_address: ${GNB_IP:-10.53.1.5}
       ue:
@@ -141,6 +145,8 @@ services:
       - ./configs/cu:/configs
       - ./logs/cu2_logs:/tmp
     networks:
+      ric_network:
+        ipv4_address: 10.0.2.32
       ran:
         ipv4_address: ${GNB_IP:-10.53.1.6}
       ue:
@@ -176,6 +182,8 @@ services:
       - ./configs/cu:/configs
       - ./logs/cu3_logs:/tmp
     networks:
+      ric_network:
+        ipv4_address: 10.0.2.33
       ran:
         ipv4_address: ${GNB_IP:-10.53.1.7}
       ue:
@@ -188,40 +196,40 @@ services:
         condition: service_healthy
    # Command to run into the final container
     command: srscu -c /configs/cu3_config.yml
-  cu0_gnuradio:
-    stdin_open: true
-    tty: true
-    container_name: srsran_cu_0_gnuradio
-    image: akhil15935/gnb:split_8
-    privileged: true
-    cap_add:
-      - SYS_RESOURCE
-      - SYS_NICE
-      - NET_ADMIN
-      - CAP_SYS_PTRACE
-    volumes:
-      # Access USB to use some SDRs
-      - /dev/bus/usb/:/dev/bus/usb/
-      # Sharing images between the host and the pod.
-      # It's also possible to download the images inside the pod
-      - /usr/share/uhd/images:/usr/share/uhd/images
-      # Save logs and more into gnb-storage
-      - gnb-storage:/tmp
-      - ./configs/cu:/configs
-      - ./logs/cu0_logs:/tmp
-    networks:
-      ran:
-        ipv4_address: ${GNB_IP:-10.53.1.8}
-      ue:
-        ipv4_address: 10.53.10.8
-      metrics:
-        ipv4_address: 10.53.2.11
-    # Start GNB container after 5gc is up and running
-    depends_on:
-      5gc:
-        condition: service_healthy
-   # Command to run into the final container
-    command: srscu -c /configs/cu0_config_gnuradio.yml
+  # cu0_gnuradio:
+  #   stdin_open: true
+  #   tty: true
+  #   container_name: srsran_cu_0_gnuradio
+  #   image: akhil15935/gnb:split_8
+  #   privileged: true
+  #   cap_add:
+  #     - SYS_RESOURCE
+  #     - SYS_NICE
+  #     - NET_ADMIN
+  #     - CAP_SYS_PTRACE
+  #   volumes:
+  #     # Access USB to use some SDRs
+  #     - /dev/bus/usb/:/dev/bus/usb/
+  #     # Sharing images between the host and the pod.
+  #     # It's also possible to download the images inside the pod
+  #     - /usr/share/uhd/images:/usr/share/uhd/images
+  #     # Save logs and more into gnb-storage
+  #     - gnb-storage:/tmp
+  #     - ./configs/cu:/configs
+  #     - ./logs/cu0_logs:/tmp
+  #   networks:
+  #     ran:
+  #       ipv4_address: ${GNB_IP:-10.53.1.8}
+  #     ue:
+  #       ipv4_address: 10.53.10.8
+  #     metrics:
+  #       ipv4_address: 10.53.2.11
+  #   # Start GNB container after 5gc is up and running
+  #   depends_on:
+  #     5gc:
+  #       condition: service_healthy
+  #  # Command to run into the final container
+  #   command: srscu -c /configs/cu0_config_gnuradio.yml
   du0:
     stdin_open: true
     tty: true
@@ -246,6 +254,8 @@ services:
     networks:
       ran:
         ipv4_address: ${GNB_IP:-10.53.1.15}
+      ric_network:
+        ipv4_address: 10.0.2.40
       ue:
         ipv4_address: 10.53.10.15
       metrics:
@@ -281,6 +291,8 @@ services:
       - ./configs/du:/configs
       - ./logs/du1_logs:/tmp
     networks:
+      ric_network:
+        ipv4_address: 10.0.2.41
       ran:
         ipv4_address: ${GNB_IP:-10.53.1.16}
       ue:
@@ -319,6 +331,8 @@ services:
       - ./configs/du:/configs
       - ./logs/du2_logs:/tmp
     networks:
+      ric_network:
+        ipv4_address: 10.0.2.42
       ran:
         ipv4_address: ${GNB_IP:-10.53.1.17}
       ue:
@@ -357,6 +371,8 @@ services:
       - ./configs/du:/configs
       - ./logs/du3_logs:/tmp
     networks:
+      ric_network:
+        ipv4_address: 10.0.2.43
       ran:
         ipv4_address: ${GNB_IP:-10.53.1.18}
       ue:
@@ -372,43 +388,43 @@ services:
     # Command to run into the final container
     command: srsdu -c /configs/du3_config.yml
     # command: sleep infinity
-  du0_gnuradio:
-    stdin_open: true
-    tty: true
-    container_name: srsran_du_0_gnuradio
-    image: akhil15935/gnb:split_8
-    privileged: true
-    cap_add:
-      - SYS_RESOURCE
-      - NET_ADMIN
-      - SYS_NICE
-      - CAP_SYS_PTRACE
-    volumes:
-      # Access USB to use some SDRs
-      - /dev/bus/usb/:/dev/bus/usb/
-      # Sharing images between the host and the pod.
-      # It's also possible to download the images inside the pod
-      - /usr/share/uhd/images:/usr/share/uhd/images
-      # Save logs and more into gnb-storage
-      - gnb-storage:/tmp
-      - ./configs/du:/configs
-      - ./logs/du0_logs:/tmp
-    networks:
-      ran:
-        ipv4_address: ${GNB_IP:-10.53.1.19}
-      ue:
-        ipv4_address: 10.53.10.19
-      metrics:
-        ipv4_address: 10.53.2.22
-    # Start GNB container after 5gc is up and running
-    depends_on:
-      cu0_gnuradio:
-        condition: service_started
-      5gc:
-        condition: service_healthy
-    # Command to run into the final container
-    command: srsdu -c /configs/du0_config_gnuradio.yml
-    # command: sleep infinity
+  # du0_gnuradio:
+  #   stdin_open: true
+  #   tty: true
+  #   container_name: srsran_du_0_gnuradio
+  #   image: akhil15935/gnb:split_8
+  #   privileged: true
+  #   cap_add:
+  #     - SYS_RESOURCE
+  #     - NET_ADMIN
+  #     - SYS_NICE
+  #     - CAP_SYS_PTRACE
+  #   volumes:
+  #     # Access USB to use some SDRs
+  #     - /dev/bus/usb/:/dev/bus/usb/
+  #     # Sharing images between the host and the pod.
+  #     # It's also possible to download the images inside the pod
+  #     - /usr/share/uhd/images:/usr/share/uhd/images
+  #     # Save logs and more into gnb-storage
+  #     - gnb-storage:/tmp
+  #     - ./configs/du:/configs
+  #     - ./logs/du0_logs:/tmp
+  #   networks:
+  #     ran:
+  #       ipv4_address: ${GNB_IP:-10.53.1.19}
+  #     ue:
+  #       ipv4_address: 10.53.10.19
+  #     metrics:
+  #       ipv4_address: 10.53.2.22
+  #   # Start GNB container after 5gc is up and running
+  #   depends_on:
+  #     cu0_gnuradio:
+  #       condition: service_started
+  #     5gc:
+  #       condition: service_healthy
+  #   # Command to run into the final container
+  #   command: srsdu -c /configs/du0_config_gnuradio.yml
+  #   # command: sleep infinity
 
   gnb:
     stdin_open: true
@@ -560,54 +576,54 @@ services:
       ue:
         ipv4_address: 10.53.10.23
     command: bash -c '/srsran/srsue/src/srsue /configs/ue3.conf & while true; do ping 10.45.1.1; sleep 2; done'
-  srsue0_gnuradio:
-    stdin_open: true
-    tty: true
-    image: akhil15935/srsue:split_8
-    container_name: ue0_gnuradio
-    devices:
-      - /dev/net/tun
-    cap_add:
-      - SYS_NICE
-      - SYS_RESOURCE
-      - NET_ADMIN
-    depends_on:
-      cu0_gnuradio:
-        condition: service_started
-      du0_gnuradio:
-        condition: service_started
-    volumes:
-      - ./configs/ue:/configs
-    environment:
-      - LD_LIBRARY_PATH=/srsran/lib/src/phy/rf/
-    networks:
-      ue:
-        ipv4_address: 10.53.10.24
-    command: bash -c '/srsran/srsue/src/srsue /configs/ue0_gnuradio.conf & while true; do ping 10.45.1.1; sleep 2; done'
-  srsue1_gnuradio:
-    stdin_open: true
-    tty: true
-    image: akhil15935/srsue:split_8
-    container_name: ue1_gnuradio
-    devices:
-      - /dev/net/tun
-    cap_add:
-      - SYS_NICE
-      - SYS_RESOURCE
-      - NET_ADMIN
-    depends_on:
-      cu0_gnuradio:
-        condition: service_started
-      du0_gnuradio:
-        condition: service_started
-    volumes:
-      - ./configs/ue:/configs
-    environment:
-      - LD_LIBRARY_PATH=/srsran/lib/src/phy/rf/
-    networks:
-      ue:
-        ipv4_address: 10.53.10.25
-    command: bash -c '/srsran/srsue/src/srsue /configs/ue1_gnuradio.conf & while true; do ping 10.45.1.1; sleep 2; done'
+  # srsue0_gnuradio:
+  #   stdin_open: true
+  #   tty: true
+  #   image: akhil15935/srsue:split_8
+  #   container_name: ue0_gnuradio
+  #   devices:
+  #     - /dev/net/tun
+  #   cap_add:
+  #     - SYS_NICE
+  #     - SYS_RESOURCE
+  #     - NET_ADMIN
+  #   depends_on:
+  #     cu0_gnuradio:
+  #       condition: service_started
+  #     du0_gnuradio:
+  #       condition: service_started
+  #   volumes:
+  #     - ./configs/ue:/configs
+  #   environment:
+  #     - LD_LIBRARY_PATH=/srsran/lib/src/phy/rf/
+  #   networks:
+  #     ue:
+  #       ipv4_address: 10.53.10.24
+  #   command: bash -c '/srsran/srsue/src/srsue /configs/ue0_gnuradio.conf & while true; do ping 10.45.1.1; sleep 2; done'
+  # srsue1_gnuradio:
+  #   stdin_open: true
+  #   tty: true
+  #   image: akhil15935/srsue:split_8
+  #   container_name: ue1_gnuradio
+  #   devices:
+  #     - /dev/net/tun
+  #   cap_add:
+  #     - SYS_NICE
+  #     - SYS_RESOURCE
+  #     - NET_ADMIN
+  #   depends_on:
+  #     cu0_gnuradio:
+  #       condition: service_started
+  #     du0_gnuradio:
+  #       condition: service_started
+  #   volumes:
+  #     - ./configs/ue:/configs
+  #   environment:
+  #     - LD_LIBRARY_PATH=/srsran/lib/src/phy/rf/
+  #   networks:
+  #     ue:
+  #       ipv4_address: 10.53.10.25
+  #   command: bash -c '/srsran/srsue/src/srsue /configs/ue1_gnuradio.conf & while true; do ping 10.45.1.1; sleep 2; done'
   metrics-server:
     container_name: metrics_server
     image: srsran/metrics_server
@@ -671,19 +687,25 @@ volumes:
 
 networks:
   ran:
+    name: ran
     internal: true
     ipam:
       driver: default
       config:
         - subnet: 10.53.1.0/24
   ue:
+    name: ue
     internal: true
     ipam:
       driver: default
       config:
         - subnet: 10.53.10.0/24
   metrics:
+    name: metrics
     ipam:
       driver: default
       config:
         - subnet: 10.53.2.0/24
+  ric_network:
+    name: ric_network
+    external: true
